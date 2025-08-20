@@ -1,0 +1,19 @@
+{
+  "name": "kpp-test-app",
+  "version": "1.0.0",
+  "description": "Test app for knex-ptosc-plugin",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback",
+    "test": "node -e \"console.log('no tests')\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "knex": "^3.1.0",
+    "mysql2": "^3.9.4"
+  }
+}
