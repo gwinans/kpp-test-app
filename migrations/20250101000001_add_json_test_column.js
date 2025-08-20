@@ -1,5 +1,6 @@
 /**
  * Add json_test column to test_table.
+ * This migration uses the pt-online-schema-change plugin to alter the table without locking it.
  */
 
 const { alterTableWithPtosc } = require('knex-ptosc-plugin');
