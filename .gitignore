@@ -1,1 +1,16 @@
+# Node.js
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+.env
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

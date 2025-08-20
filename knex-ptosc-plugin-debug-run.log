@@ -1,0 +1,52 @@
+Using environment: development
+[PT-OSC] Dry-run for ALTER TABLE test_table add `json_test` json
+[PT-OSC] Running: /usr/bin/pt-online-schema-change --alter "add `json_test` json" --alter-foreign-keys-method=auto D=ptosc,t=test_table --dry-run --host=127.0.0.1 --user=root --max-load Threads_running=150 --critical-load Threads_running=50 --analyze-before-swap --check-alter --check-foreign-keys --check-plan --check-replication-filters --chunk-size 1000 --chunk-size-limit 4 --chunk-time 0.5 --drop-new-table --drop-old-table --drop-triggers --check-unique-key-change --max-lag 25
+Operation, tries, wait:
+  analyze_table, 10, 1
+  copy_rows, 10, 0.25
+  create_triggers, 10, 1
+  drop_triggers, 10, 1
+  swap_tables, 10, 1
+  update_foreign_keys, 10, 1
+Starting a dry run.  `ptosc`.`test_table` will not be altered.  Specify --execute instead of --dry-run to alter the table.
+Creating new table...
+Created new table ptosc._test_table_new OK.
+Altering new table...
+Altered `ptosc`.`_test_table_new` OK.
+Not creating triggers because this is a dry run.
+Not copying rows because this is a dry run.
+Not swapping tables because this is a dry run.
+Not dropping old table because this is a dry run.
+Not dropping triggers because this is a dry run.
+2025-08-19T20:24:53 Dropping new table...
+2025-08-19T20:24:53 Dropped new table OK.
+Dry run complete.  `ptosc`.`test_table` was not altered.
+[PT-OSC] Dry-run successful. Executing ALTER TABLE test_table add `json_test` json
+[PT-OSC] Running: /usr/bin/pt-online-schema-change --alter "add `json_test` json" --alter-foreign-keys-method=auto D=ptosc,t=test_table --execute --host=127.0.0.1 --user=root --max-load Threads_running=150 --critical-load Threads_running=50 --analyze-before-swap --check-alter --check-foreign-keys --check-plan --check-replication-filters --chunk-size 1000 --chunk-size-limit 4 --chunk-time 0.5 --drop-new-table --drop-old-table --drop-triggers --check-unique-key-change --max-lag 25
+No slaves found.  See --recursion-method if host Doodoohead has slaves.
+Not checking slave lag because no slaves were found and --check-slave-lag was not specified.
+Operation, tries, wait:
+  analyze_table, 10, 1
+  copy_rows, 10, 0.25
+  create_triggers, 10, 1
+  drop_triggers, 10, 1
+  swap_tables, 10, 1
+  update_foreign_keys, 10, 1
+Altering `ptosc`.`test_table`...
+Creating new table...
+Created new table ptosc._test_table_new OK.
+Altering new table...
+Altered `ptosc`.`_test_table_new` OK.
+2025-08-19T20:24:54 Creating triggers...
+2025-08-19T20:24:54 Created triggers OK.
+2025-08-19T20:24:54 Copying approximately 1 rows...
+2025-08-19T20:24:54 Copied rows OK.
+2025-08-19T20:24:54 Analyzing new table...
+2025-08-19T20:24:54 Swapping tables...
+2025-08-19T20:24:54 Swapped original and new tables OK.
+2025-08-19T20:24:54 Dropping old table...
+2025-08-19T20:24:54 Dropped old table `ptosc`.`_test_table_old` OK.
+2025-08-19T20:24:54 Dropping triggers...
+2025-08-19T20:24:54 Dropped triggers OK.
+Successfully altered `ptosc`.`test_table`.
+Batch 1 run: 3 migrations
