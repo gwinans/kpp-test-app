@@ -1,10 +1,11 @@
 /**
- * Create test_table with a varchar and an integer column.
+ * Create test_table with an auto-incrementing primary key, a non-nullable varchar, and a non-nullable integer column.
  */
 exports.up = function (knex) {
   return knex.schema.createTable('test_table', (table) => {
-    table.string('name');
-    table.integer('value');
+    table.increments('id').primary().unsigned();
+    table.string('name').notNullable();
+    table.integer('value').notNullable();
   });
 };
 
