@@ -12,6 +12,7 @@ exports.up = function (knex) {
     maxLoad: 150,
     criticalLoad: 50,
     alterForeignKeysMethod: 'auto',
+    statistics: true,
   });
 };
 
