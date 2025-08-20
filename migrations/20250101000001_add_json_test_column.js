@@ -13,6 +13,7 @@ exports.up = function (knex) {
     criticalLoad: 50,
     alterForeignKeysMethod: 'auto',
     statistics: true,
+    debug: true
   });
 };
 
