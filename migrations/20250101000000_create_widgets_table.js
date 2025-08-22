@@ -1,6 +1,7 @@
 /**
  * Create widgets table with a simple schema for later alterations.
  */
+
 exports.up = function (knex) {
   return knex.schema.createTable('widgets', (table) => {
     table.increments('id').primary().unsigned();
