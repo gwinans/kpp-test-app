@@ -14,7 +14,7 @@
   "type": "commonjs",
   "dependencies": {
     "knex": "^3.1.0",
-    "knex-ptosc-plugin": "^0.2.4",
+    "knex-ptosc-plugin": "^0.2.6",
     "mysql2": "^3.9.4"
   }
 }
