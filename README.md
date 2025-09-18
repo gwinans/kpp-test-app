@@ -1,6 +1,6 @@
 # kpp-test-app
 
-Test app for knex-ptosc-plugin
+Test app for [knex-ptosc-plugin](https://github.com/gwinans/knex-ptosc-plugin/)
 
 This project demonstrates Knex migrations using a MySQL database.
 
