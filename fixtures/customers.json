@@ -1,0 +1,7 @@
+[
+  { "external_id": "CUST-1000", "email": "amy.anderson@example.com", "full_name": "Amy Anderson", "status": "active" },
+  { "external_id": "CUST-1001", "email": "brian.banks@example.com", "full_name": "Brian Banks", "status": "active" },
+  { "external_id": "CUST-1002", "email": "carla.cortez@example.com", "full_name": "Carla Cortez", "status": "prospect" },
+  { "external_id": "CUST-1003", "email": "darius.dunn@example.com", "full_name": "Darius Dunn", "status": "active" },
+  { "external_id": "CUST-1004", "email": "erin.evans@example.com", "full_name": "Erin Evans", "status": "churned" }
+]

@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: ptosc
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: password
+    ports:
+      - '3306:3306'
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-ptest']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - mysql-data:/var/lib/mysql
+  prometheus:
+    image: prom/prometheus:latest
+    depends_on:
+      - mysql
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./ops/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+volumes:
+  mysql-data:

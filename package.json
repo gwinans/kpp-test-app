@@ -4,9 +4,14 @@
   "description": "Test app for knex-ptosc-plugin",
   "main": "index.js",
   "scripts": {
-    "migrate": "knex migrate:latest",
-    "rollback": "knex migrate:rollback",
-    "test": "node -e \"console.log('no tests')\""
+    "migrate": "node bin/ptosc-toolkit.js migrate",
+    "rollback": "node bin/ptosc-toolkit.js rollback",
+    "seed": "node bin/ptosc-toolkit.js seed",
+    "ptosc:plan": "node bin/ptosc-toolkit.js plan",
+    "ptosc:dry-run": "node bin/ptosc-toolkit.js dry-run",
+    "ptosc:validate": "node bin/ptosc-toolkit.js validate",
+    "db:wait": "node scripts/wait-for-mysql.js",
+    "test": "node --test tests"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +20,8 @@
   "dependencies": {
     "knex": "^3.1.0",
     "knex-ptosc-plugin": "^0.2.8",
-    "mysql2": "^3.9.4"
+    "mysql2": "^3.9.4",
+    "pino": "^10.0.0",
+    "prom-client": "^15.1.3"
   }
 }

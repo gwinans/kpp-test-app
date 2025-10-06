@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: ptosc
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -ptest"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: test
+      DB_NAME: ptosc
+      ENABLE_PTOSC_METRICS: 'true'
+      LOG_LEVEL: info
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run db:wait
+      - run: npm run migrate
+      - run: npm run seed
+      - name: Run integration tests
+        run: |
+          set -o pipefail
+          npm run ptosc:validate | tee ptosc-test.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ptosc-logs
+          path: ptosc-test.log

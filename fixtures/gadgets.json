@@ -1,0 +1,7 @@
+[
+  { "title": "Flux Capacitor", "status": "active", "qty": 25, "price": 19999.99, "warehouse": "SEA-01" },
+  { "title": "Hoverboard", "status": "active", "qty": 80, "price": 3499.00, "warehouse": "IAD-02" },
+  { "title": "Sonic Screwdriver", "status": "pending", "qty": 150, "price": 129.99, "warehouse": "FRA-01" },
+  { "title": "Portal Gun", "status": "active", "qty": 45, "price": 7999.50, "warehouse": "SEA-01" },
+  { "title": "Neuralyzer", "status": "pending", "qty": 65, "price": 4599.00, "warehouse": "IAD-02" }
+]
