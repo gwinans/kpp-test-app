@@ -1,0 +1,5 @@
+[
+  { "code": "SEA-01", "region": "us-west" },
+  { "code": "IAD-02", "region": "us-east" },
+  { "code": "FRA-01", "region": "eu-central" }
+]
