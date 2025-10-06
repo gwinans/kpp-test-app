@@ -88,12 +88,16 @@ test('migrations produce expected relational schema state', async (t) => {
   const [{ total_snapshots }] = await knex('inventory_snapshots').count('* as total_snapshots');
   assert.ok(total_snapshots >= 450, 'expected at least 450 inventory snapshots');
 
-  const fkConstraints = await knex('information_schema.referential_constraints')
-    .select('constraint_name', 'table_name')
-    .where({ constraint_schema: databaseName });
-  const orderFk = fkConstraints.find(
-    (row) => typeof row.constraint_name === 'string' && row.constraint_name.includes('orders_ibfk')
-  );
+  const orderFk = await knex('information_schema.key_column_usage')
+    .select('constraint_name')
+    .where({
+      constraint_schema: databaseName,
+      table_name: 'orders',
+      column_name: 'customer_id',
+      referenced_table_name: 'customers',
+      referenced_column_name: 'id'
+    })
+    .first();
   assert.ok(orderFk, 'expected orders table to retain foreign key to customers');
 
   const orderIndexes = await knex.raw('SHOW INDEX FROM orders');

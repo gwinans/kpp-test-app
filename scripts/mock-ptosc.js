@@ -13,11 +13,19 @@ function parseArgs(argv) {
     } else if (arg.startsWith('D=')) {
       const parts = arg.slice(2).split(',');
       for (const part of parts) {
-        const [key, value] = part.split('=');
-        if (key === 't') {
-          result.table = value;
-        } else if (key === '') {
+        const [rawKey, rawValue] = part.split('=');
+        const key = rawKey.trim();
+        const value = rawValue == null ? undefined : rawValue.trim();
+        if (!key && !value) {
           continue;
+        }
+        if (key === 't') {
+          result.table = value || '';
+        } else if (!key) {
+          // nothing else to infer
+          continue;
+        } else if (value == null || value === '') {
+          result.database = key;
         } else {
           result.database = value;
         }
