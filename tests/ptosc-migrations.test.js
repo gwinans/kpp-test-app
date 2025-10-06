@@ -91,7 +91,9 @@ test('migrations produce expected relational schema state', async (t) => {
   const fkConstraints = await knex('information_schema.referential_constraints')
     .select('constraint_name', 'table_name')
     .where({ constraint_schema: databaseName });
-  const orderFk = fkConstraints.find((row) => row.constraint_name.includes('orders_ibfk'));
+  const orderFk = fkConstraints.find(
+    (row) => typeof row.constraint_name === 'string' && row.constraint_name.includes('orders_ibfk')
+  );
   assert.ok(orderFk, 'expected orders table to retain foreign key to customers');
 
   const orderIndexes = await knex.raw('SHOW INDEX FROM orders');

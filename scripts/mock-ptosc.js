@@ -50,7 +50,10 @@ async function applyAlter(config, alterClause) {
   };
   const connection = await mysql.createConnection(connectionOptions);
   try {
-    const sql = `ALTER TABLE \`${config.table}\` ${alterClause}`;
+    const trimmedAlter = (alterClause || '').trim();
+    const sql = /^alter\s+table/i.test(trimmedAlter)
+      ? trimmedAlter
+      : `ALTER TABLE \`${config.table}\` ${alterClause}`;
     await connection.query(sql);
   } finally {
     await connection.end();
