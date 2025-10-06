@@ -93,8 +93,10 @@ MySQL 8.0 service and runs the full suite on every push/PR.
 ## Troubleshooting
 
 - **MySQL connection errors** – ensure the credentials in `knexfile.js` match your environment or export `DB_*` variables.
-- **pt-osc binary missing** – install Percona Toolkit locally or set `PTOSC_PATH` when calling the CLI. The provided
-  `scripts/mock-ptosc.js` is useful for offline development or CI environments without the binary.
+- **pt-osc binary missing** – install Percona Toolkit locally or set `PTOSC_PATH` when calling the CLI. The helper in
+  `src/ptosc-options.js` automatically falls back to `scripts/mock-ptosc.js` whenever `pt-online-schema-change` is not
+  discoverable on your `PATH` (unless you set `PTOSC_ALLOW_MOCK=false`). This keeps CI/local development productive while
+  still allowing you to require the real binary when desired.
 - **Metrics not visible** – confirm `ENABLE_PTOSC_METRICS` is not set to `false` and that port `9464` is reachable. When using Docker
   on Linux you may need to update `ops/prometheus.yml` to point at the host IP rather than `host.docker.internal`.
 - **Dry-run schema leftovers** – set `PTOSC_KEEP_DRYRUN_DB=false` (default) so the toolkit drops ephemeral databases after execution.

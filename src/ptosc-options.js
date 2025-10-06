@@ -1,12 +1,18 @@
 'use strict';
 
 const http = require('node:http');
+const path = require('node:path');
+const fs = require('node:fs');
 const pino = require('pino');
 const client = require('prom-client');
 
 const DEFAULT_LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 const METRICS_ENV = process.env.ENABLE_PTOSC_METRICS;
 const METRICS_ENABLED = METRICS_ENV == null || METRICS_ENV.toLowerCase() === 'true';
+const DEFAULT_PTOSC_BINARY = process.env.PTOSC_BINARY || 'pt-online-schema-change';
+const ALLOW_PTOSC_MOCK = process.env.PTOSC_ALLOW_MOCK !== 'false';
+
+let fallbackNoticeLogged = false;
 
 let baseLogger;
 let registry;
@@ -64,10 +70,81 @@ function normalizeLogger(migrationName, overrides) {
   };
 }
 
+function commandExists(candidate) {
+  if (!candidate) {
+    return false;
+  }
+  try {
+    fs.accessSync(candidate, fs.constants.X_OK);
+    return true;
+  } catch (err) {
+    // continue to PATH lookup below
+  }
+
+  if (candidate.includes(path.sep)) {
+    return false;
+  }
+
+  const pathEntries = process.env.PATH ? process.env.PATH.split(path.delimiter) : [];
+  const extensions = process.platform === 'win32'
+    ? (process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM').split(';')
+    : [''];
+
+  for (const dir of pathEntries) {
+    for (const ext of extensions) {
+      const maybe = path.join(dir, `${candidate}${ext}`);
+      try {
+        fs.accessSync(maybe, fs.constants.X_OK);
+        return true;
+      } catch {
+        continue;
+      }
+    }
+  }
+  return false;
+}
+
+function resolvePtoscPath(ptoscPathOverride) {
+  if (ptoscPathOverride) {
+    return ptoscPathOverride;
+  }
+  if (process.env.PTOSC_PATH) {
+    return process.env.PTOSC_PATH;
+  }
+  if (commandExists(DEFAULT_PTOSC_BINARY)) {
+    return DEFAULT_PTOSC_BINARY;
+  }
+  if (ALLOW_PTOSC_MOCK) {
+    if (!fallbackNoticeLogged) {
+      getBaseLogger().warn(
+        { event: 'ptosc_mock_fallback', binary: DEFAULT_PTOSC_BINARY },
+        'pt-online-schema-change binary not found; falling back to mock implementation'
+      );
+      fallbackNoticeLogged = true;
+    }
+    return path.join(__dirname, '..', 'scripts', 'mock-ptosc.js');
+  }
+  if (!fallbackNoticeLogged) {
+    getBaseLogger().error(
+      { event: 'ptosc_binary_missing', binary: DEFAULT_PTOSC_BINARY },
+      'pt-online-schema-change binary not found and mock fallback disabled'
+    );
+    fallbackNoticeLogged = true;
+  }
+  return DEFAULT_PTOSC_BINARY;
+}
+
 function createPtoscOptions(migrationName, overrides = {}) {
-  const { logger: loggerOverride, onProgress: onProgressOverride, onStatistics: onStatisticsOverride, ...rest } = overrides;
+  const {
+    logger: loggerOverride,
+    onProgress: onProgressOverride,
+    onStatistics: onStatisticsOverride,
+    ptoscPath: ptoscPathOverride,
+    ...rest
+  } = overrides;
   const logger = normalizeLogger(migrationName, loggerOverride);
   const gauge = getProgressGauge();
+  const ptoscPath = resolvePtoscPath(ptoscPathOverride);
 
   const onProgress = (pct, eta) => {
     if (logger._pino) {
@@ -101,6 +178,10 @@ function createPtoscOptions(migrationName, overrides = {}) {
     onStatistics,
     ...rest
   };
+
+  if (ptoscPath) {
+    options.ptoscPath = ptoscPath;
+  }
 
   return options;
 }
